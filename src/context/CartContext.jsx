@@ -33,6 +33,16 @@ export function CartProvider({ children }) {
     setItems((prevItems) => prevItems.filter((item) => item.bookId !== bookId));
   };
 
+  const updateQuantity = (bookId, delta) => {
+    setItems((prevItems) =>
+      prevItems
+        .map((item) =>
+          item.bookId === bookId ? { ...item, quantity: item.quantity + delta } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -52,6 +62,7 @@ export function CartProvider({ children }) {
       items,
       addToCart,
       removeFromCart,
+      updateQuantity,
       clearCart,
       totalItems,
       totalPrice,
