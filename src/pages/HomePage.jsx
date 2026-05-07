@@ -8,19 +8,22 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredBooks = useMemo(() => {
-    const normalizedQuery = searchTerm.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return booksMock;
-    }
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return booksMock;
 
-    return booksMock.filter((book) => book.title.toLowerCase().includes(normalizedQuery));
+    return booksMock.filter(
+      (book) =>
+        book.title.toLowerCase().includes(q) ||
+        book.author.toLowerCase().includes(q) ||
+        book.genre.toLowerCase().includes(q)
+    );
   }, [searchTerm]);
 
   return (
     <section className="page-section">
       <header className="section-header">
         <h1>Catálogo de libros</h1>
-        <p>Encuentra tu próxima lectura por título.</p>
+        <p>Encuentra tu próxima lectura por título, autor o género.</p>
       </header>
 
       <SearchBar value={searchTerm} onChange={setSearchTerm} />
