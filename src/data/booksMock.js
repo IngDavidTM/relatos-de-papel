@@ -3,6 +3,7 @@ const booksMock = [
     id: 1,
     title: 'Cien Años de Soledad',
     author: 'Gabriel García Márquez',
+    genre: 'Realismo mágico',
     code: 'RDP-001',
     price: 24.5,
     description:
@@ -14,6 +15,7 @@ const booksMock = [
     id: 2,
     title: 'La Sombra del Viento',
     author: 'Carlos Ruiz Zafón',
+    genre: 'Novela negra',
     code: 'RDP-002',
     price: 21.9,
     description:
@@ -25,6 +27,7 @@ const booksMock = [
     id: 3,
     title: 'Rayuela',
     author: 'Julio Cortázar',
+    genre: 'Novela experimental',
     code: 'RDP-003',
     price: 19.75,
     description:
@@ -36,6 +39,7 @@ const booksMock = [
     id: 4,
     title: '1984',
     author: 'George Orwell',
+    genre: 'Distopía',
     code: 'RDP-004',
     price: 17.8,
     description:
@@ -47,6 +51,7 @@ const booksMock = [
     id: 5,
     title: 'Orgullo y Prejuicio',
     author: 'Jane Austen',
+    genre: 'Romance clásico',
     code: 'RDP-005',
     price: 16.4,
     description:
@@ -58,6 +63,7 @@ const booksMock = [
     id: 6,
     title: 'Fahrenheit 451',
     author: 'Ray Bradbury',
+    genre: 'Ciencia ficción',
     code: 'RDP-006',
     price: 18.2,
     description:
@@ -69,6 +75,7 @@ const booksMock = [
     id: 7,
     title: 'El Nombre de la Rosa',
     author: 'Umberto Eco',
+    genre: 'Novela histórica',
     code: 'RDP-007',
     price: 22.3,
     description:
@@ -80,6 +87,7 @@ const booksMock = [
     id: 8,
     title: 'Don Quijote de la Mancha',
     author: 'Miguel de Cervantes',
+    genre: 'Clásico',
     code: 'RDP-008',
     price: 26.0,
     description:
@@ -91,6 +99,7 @@ const booksMock = [
     id: 9,
     title: 'Los Detectives Salvajes',
     author: 'Roberto Bolaño',
+    genre: 'Literatura latinoamericana',
     code: 'RDP-009',
     price: 23.1,
     description:
@@ -102,6 +111,7 @@ const booksMock = [
     id: 10,
     title: 'Pedro Páramo',
     author: 'Juan Rulfo',
+    genre: 'Realismo mágico',
     code: 'RDP-010',
     price: 14.9,
     description:
@@ -113,6 +123,7 @@ const booksMock = [
     id: 11,
     title: 'Matar a un Ruiseñor',
     author: 'Harper Lee',
+    genre: 'Ficción histórica',
     code: 'RDP-011',
     price: 18.95,
     description:
@@ -124,6 +135,7 @@ const booksMock = [
     id: 12,
     title: 'Crimen y Castigo',
     author: 'Fiódor Dostoievski',
+    genre: 'Novela psicológica',
     code: 'RDP-012',
     price: 20.7,
     description:
@@ -135,6 +147,7 @@ const booksMock = [
     id: 13,
     title: 'El Principito',
     author: 'Antoine de Saint-Exupéry',
+    genre: 'Fábula',
     code: 'RDP-013',
     price: 12.6,
     description:
@@ -146,6 +159,7 @@ const booksMock = [
     id: 14,
     title: 'La Casa de los Espíritus',
     author: 'Isabel Allende',
+    genre: 'Realismo mágico',
     code: 'RDP-014',
     price: 19.4,
     description:
@@ -157,6 +171,7 @@ const booksMock = [
     id: 15,
     title: 'El Alquimista',
     author: 'Paulo Coelho',
+    genre: 'Ficción filosófica',
     code: 'RDP-015',
     price: 15.8,
     description:
@@ -168,6 +183,7 @@ const booksMock = [
     id: 16,
     title: 'Ensayo sobre la Ceguera',
     author: 'José Saramago',
+    genre: 'Ficción distópica',
     code: 'RDP-016',
     price: 21.4,
     description:
@@ -179,6 +195,7 @@ const booksMock = [
     id: 17,
     title: 'La Tregua',
     author: 'Mario Benedetti',
+    genre: 'Novela íntima',
     code: 'RDP-017',
     price: 13.95,
     description:
@@ -190,6 +207,7 @@ const booksMock = [
     id: 18,
     title: 'Siddhartha',
     author: 'Hermann Hesse',
+    genre: 'Ficción espiritual',
     code: 'RDP-018',
     price: 14.5,
     description:
@@ -201,6 +219,7 @@ const booksMock = [
     id: 19,
     title: 'La Metamorfosis',
     author: 'Franz Kafka',
+    genre: 'Ficción absurda',
     code: 'RDP-019',
     price: 11.9,
     description:
@@ -212,6 +231,7 @@ const booksMock = [
     id: 20,
     title: 'Itinerario de un Lector',
     author: 'Ana María Matute',
+    genre: 'Ensayo',
     code: 'RDP-020',
     price: 16.95,
     description:
