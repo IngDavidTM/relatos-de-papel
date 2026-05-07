@@ -859,6 +859,22 @@ h3,
   color: #fff;
 }
 
+.auth-switch {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.auth-switch a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
 .error-text {
   color: var(--danger);
   margin: 0;
