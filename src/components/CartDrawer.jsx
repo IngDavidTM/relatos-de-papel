@@ -5,7 +5,7 @@ import CartItem from './CartItem';
 
 function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, totalItems, totalPrice, removeFromCart } = useCart();
+  const { items, totalItems, totalPrice, removeFromCart, updateQuantity } = useCart();
 
   useEffect(() => {
     if (!isOpen) {
@@ -38,7 +38,7 @@ function CartDrawer() {
             <>
               <ul className="cart-list">
                 {items.map((item) => (
-                  <CartItem key={item.bookId} item={item} onRemove={removeFromCart} />
+                  <CartItem key={item.bookId} item={item} onRemove={removeFromCart} onUpdate={updateQuantity} />
                 ))}
               </ul>
               <p className="cart-total">Total: ${totalPrice.toFixed(2)}</p>
