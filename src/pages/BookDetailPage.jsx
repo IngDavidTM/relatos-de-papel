@@ -28,6 +28,7 @@ function BookDetailPage() {
           <p className="book-code">{book.code}</p>
           <h1>{book.title}</h1>
           <p className="book-author">{book.author}</p>
+          <span className="book-genre-badge">{book.genre}</span>
           <p className="book-description">{book.description}</p>
           <p className="book-price detail-price">${book.price.toFixed(2)}</p>
 

@@ -27,6 +27,7 @@ function BookCard({ book }) {
       <div className="book-card-content">
         <h3>{book.title}</h3>
         <p className="book-author">{book.author}</p>
+        <span className="book-genre-badge">{book.genre}</span>
 
         <div className="book-card-footer">
           <p className="book-price">
