@@ -1,0 +1,9 @@
+node_modules
+.vscode
+.DS_Store
+dist
+
+# Documentación académica
+*.pdf
+*.docx
+~$*.docx
