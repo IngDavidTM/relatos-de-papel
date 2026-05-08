@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function LoginForm() {
@@ -29,7 +29,7 @@ function LoginForm() {
   return (
     <form className="login-form" onSubmit={handleSubmit}>
       <h2>Iniciar sesión</h2>
-      <p className="login-hint">Usuario: lectora · Clave: relatos123</p>
+      <p className="login-hint">Demo — usuario: lectora · clave: relatos123</p>
 
       <label htmlFor="username">Usuario</label>
       <input
@@ -56,6 +56,11 @@ function LoginForm() {
       <button className="btn btn-primary" type="submit">
         Entrar
       </button>
+
+      <p className="auth-switch">
+        ¿No tienes cuenta?{' '}
+        <Link to="/register">Regístrate aquí</Link>
+      </p>
     </form>
   );
 }

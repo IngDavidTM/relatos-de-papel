@@ -12,21 +12,54 @@ const initialAuthState = {
 export function AuthProvider({ children }) {
   const [authState, setAuthState] = useLocalStorage('rdp-auth', initialAuthState);
   const [orders, setOrders] = useLocalStorage('rdp-orders', userMock.orders);
+  const [registeredUsers, setRegisteredUsers] = useLocalStorage('rdp-users', []);
 
-  const login = (username, password) => {
-    const credentialsMatch =
-      username === userMock.credentials.username &&
+  const login = (identifier, password) => {
+    const isMockUser =
+      (identifier === userMock.credentials.username ||
+        identifier === userMock.profile.email) &&
       password === userMock.credentials.password;
 
-    if (!credentialsMatch) {
-      return { success: false, message: 'Credenciales inválidas. Intenta nuevamente.' };
+    if (isMockUser) {
+      setAuthState({ user: userMock.profile, isAuthenticated: true });
+      return { success: true };
     }
 
-    setAuthState({
-      user: userMock.profile,
-      isAuthenticated: true,
-    });
+    const found = registeredUsers.find(
+      (u) => u.email === identifier && u.password === password
+    );
 
+    if (found) {
+      const { password: _pw, ...profile } = found;
+      setAuthState({ user: profile, isAuthenticated: true });
+      return { success: true };
+    }
+
+    return { success: false, message: 'Credenciales inválidas. Intenta nuevamente.' };
+  };
+
+  const register = (name, email, password) => {
+    const emailTaken =
+      email === userMock.profile.email ||
+      registeredUsers.some((u) => u.email === email);
+
+    if (emailTaken) {
+      return { success: false, message: 'Ya existe una cuenta con ese correo electrónico.' };
+    }
+
+    const newUser = {
+      id: `u-${Date.now()}`,
+      name,
+      email,
+      avatar:
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80',
+      bio: 'Nuevo lector de Relatos de Papel.',
+      password,
+    };
+
+    setRegisteredUsers((prev) => [...prev, newUser]);
+    const { password: _pw, ...profile } = newUser;
+    setAuthState({ user: profile, isAuthenticated: true });
     return { success: true };
   };
 
@@ -43,11 +76,12 @@ export function AuthProvider({ children }) {
       user: authState.user,
       isAuthenticated: authState.isAuthenticated,
       login,
+      register,
       logout,
       orders,
       addOrder,
     }),
-    [authState, orders]
+    [authState, orders, registeredUsers]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

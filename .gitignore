@@ -7,3 +7,5 @@ dist
 *.pdf
 *.docx
 ~$*.docx
+PLAN_ACCION.md
+REPORTE_PR1.md
