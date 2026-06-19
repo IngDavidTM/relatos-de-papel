@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -18,13 +19,20 @@ public class EmailService {
     private final String from;
 
     public EmailService(JavaMailSender mailSender,
-                        @Value("${spring.mail.username:no-reply@relatosdepapel.com}") String from) {
+                        @Value("${spring.mail.username:}") String from) {
         this.mailSender = mailSender;
         this.from = from;
     }
 
     public void sendOrderConfirmation(String to, String customerName, Long orderId,
                                       BigDecimal total, int itemCount) {
+        // Sin credenciales SMTP configuradas: se omite el envío de forma controlada.
+        if (!StringUtils.hasText(from)) {
+            log.info("Email omitido (sin credenciales SMTP). El pedido {} para {} se habría notificado por correo.",
+                    orderId, to);
+            return;
+        }
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
