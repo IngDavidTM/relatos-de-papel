@@ -1,11 +1,25 @@
-node_modules
-.vscode
+# ----- Sistema -----
 .DS_Store
-dist
+Thumbs.db
+*.log
 
-# Documentación académica
-*.pdf
-*.docx
-~$*.docx
-PLAN_ACCION.md
-REPORTE_PR1.md
+# ----- IDE -----
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# ----- Node / frontend -----
+node_modules/
+dist/
+
+# ----- Java / backend -----
+target/
+*.class
+
+# ----- Entornos y secretos -----
+.env
+application-local.yml
+application-local.properties
