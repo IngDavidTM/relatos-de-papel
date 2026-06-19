@@ -1,0 +1,145 @@
+name: relatos-de-papel
+
+services:
+  # ===================== Infraestructura =====================
+  mysql:
+    image: mysql:8.0
+    container_name: rdp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [relatos-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: rdp-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [relatos-net]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rdp-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks: [relatos-net]
+
+  # ===================== Descubrimiento y Gateway =====================
+  eureka:
+    build: ./eureka-server
+    container_name: rdp-eureka
+    ports:
+      - "8761:8761"
+    networks: [relatos-net]
+
+  gateway:
+    build: ./api-gateway
+    container_name: rdp-gateway
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka
+    networks: [relatos-net]
+
+  # ===================== Microservicios =====================
+  catalogue:
+    build: ./catalogue-service
+    container_name: rdp-catalogue
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka/
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: relatos_user
+      DB_PASSWORD: relatos_password
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka:
+        condition: service_started
+    networks: [relatos-net]
+
+  orders:
+    build: ./orders-service
+    container_name: rdp-orders
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka/
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: relatos_user
+      DB_PASSWORD: relatos_password
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka:
+        condition: service_started
+    networks: [relatos-net]
+
+  users:
+    build: ./users-service
+    container_name: rdp-users
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka/
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: relatos_user
+      DB_PASSWORD: relatos_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-relatos-de-papel-super-secret-key-change-in-prod-please-256}
+      JWT_EXPIRATION: 3600
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      eureka:
+        condition: service_started
+    networks: [relatos-net]
+
+  comms:
+    build: ./comms-service
+    container_name: rdp-comms
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka/
+      RABBITMQ_HOST: rabbitmq
+      GMAIL_USERNAME: ${GMAIL_USERNAME:-}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      eureka:
+        condition: service_started
+    networks: [relatos-net]
+
+volumes:
+  mysql-data:
+
+networks:
+  relatos-net:
+    driver: bridge

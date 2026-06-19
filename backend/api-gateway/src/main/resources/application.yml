@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      # La tabla de enrutamiento se resuelve dinámicamente contra Eureka
+      # mediante nombres lógicos (lb://), sin IP ni puerto.
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: catalogue-service
+          uri: lb://catalogue-service
+          predicates:
+            - Path=/api/catalogue/**
+        - id: orders-service
+          uri: lb://orders-service
+          predicates:
+            - Path=/api/orders/**
+        - id: users-service
+          uri: lb://users-service
+          predicates:
+            - Path=/api/users/**
+        - id: auth-service
+          uri: lb://users-service
+          predicates:
+            - Path=/api/auth/**
+        - id: comms-support-ws
+          uri: lb://comms-service
+          predicates:
+            - Path=/ws/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.cloud.netflix.eureka: INFO

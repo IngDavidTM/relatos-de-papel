@@ -1,0 +1,16 @@
+spring:
+  rabbitmq:
+    dynamic: false
+    listener:
+      simple:
+        auto-startup: false
+  mail:
+    host: localhost
+    port: 3025
+
+gemini:
+  api-key: ""
+
+eureka:
+  client:
+    enabled: false

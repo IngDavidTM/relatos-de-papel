@@ -1,0 +1,36 @@
+package com.relatosdepapel.catalogue.dto;
+
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BookPatchRequest {
+
+    private String title;
+    private String author;
+    private LocalDate publicationDate;
+    private String category;
+    private String isbn;
+
+    @DecimalMin(value = "1.0", message = "La valoración mínima es 1.0")
+    @DecimalMax(value = "5.0", message = "La valoración máxima es 5.0")
+    private BigDecimal rating;
+
+    private Boolean visibility;
+
+    @Min(value = 0, message = "El stock no puede ser negativo")
+    private Integer stock;
+
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor que 0")
+    private BigDecimal price;
+
+    private String description;
+    private String coverUrl;
+}
