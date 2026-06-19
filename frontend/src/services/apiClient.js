@@ -6,7 +6,7 @@
 // reenviarlo al microservicio. Para los endpoints protegidos se adjunta el
 // token opaco en la cabecera Authorization.
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+import { API_URL } from '../config/environment';
 
 const TOKEN_KEY = 'rdp-token';
 
@@ -40,7 +40,14 @@ export async function apiRequest(method, path, { body, auth = false } = {}) {
   }
 
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
+    }
+  }
 
   if (!response.ok) {
     const message = data?.message || `Error ${response.status}`;

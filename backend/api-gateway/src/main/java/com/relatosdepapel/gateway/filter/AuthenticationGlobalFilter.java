@@ -47,6 +47,10 @@ public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().value();
 
+        if (securityRules.isInternalOnly(path)) {
+            return forbidden(exchange, "Endpoint disponible solo para comunicaciones internas");
+        }
+
         if (securityRules.isPublic(request.getMethod(), path)) {
             return chain.filter(exchange);
         }
@@ -62,11 +66,19 @@ public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
                         return unauthorized(exchange, "Token inválido o expirado");
                     }
 
+                    if (securityRules.requiresAdmin(request.getMethod(), path)
+                            && !"ROLE_ADMIN".equals(validation.role())) {
+                        return forbidden(exchange, "Se requiere el rol de administrador");
+                    }
+
                     ServerHttpRequest mutatedRequest = request.mutate()
-                            .header(ACCESS_TOKEN_HEADER, validation.jwt())
-                            .header("X-User-Id", String.valueOf(validation.userId()))
-                            .header("X-User-Email", validation.email())
-                            .header("X-User-Role", validation.role())
+                            .headers(headers -> {
+                                // Se reemplazan posibles valores enviados por el cliente.
+                                headers.set(ACCESS_TOKEN_HEADER, validation.jwt());
+                                headers.set("X-User-Id", String.valueOf(validation.userId()));
+                                headers.set("X-User-Email", validation.email());
+                                headers.set("X-User-Role", validation.role());
+                            })
                             .build();
 
                     return chain.filter(exchange.mutate().request(mutatedRequest).build());
@@ -83,6 +95,12 @@ public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
 
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        exchange.getResponse().getHeaders().add("X-Auth-Error", message);
+        return exchange.getResponse().setComplete();
+    }
+
+    private Mono<Void> forbidden(ServerWebExchange exchange, String message) {
+        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
         exchange.getResponse().getHeaders().add("X-Auth-Error", message);
         return exchange.getResponse().setComplete();
     }

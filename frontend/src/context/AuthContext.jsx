@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       return;
     }
     try {
-      setOrders(await fetchRecentOrders(user.id));
+      setOrders(await fetchRecentOrders());
     } catch {
       setOrders([]);
     }

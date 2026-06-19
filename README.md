@@ -59,7 +59,7 @@ docker compose up --build -d
 
 - Eureka: <http://localhost:8761>
 - Rutas del Gateway: <http://localhost:8080/actuator/gateway/routes>
-- RabbitMQ: <http://localhost:15672> (guest/guest)
+- RabbitMQ: <http://localhost:15672> (credenciales de `backend/.env`)
 
 Más detalles en [`backend/README.md`](backend/README.md).
 
@@ -86,6 +86,9 @@ relatos-de-papel/
 
 - **Front-end:** Vercel (build de Vite, raíz `frontend/`).
 - **Back-end:** Railway (un servicio por carpeta + MySQL, Redis y RabbitMQ gestionados).
+
+La configuración, variables y comprobaciones necesarias están detalladas en
+[`DEPLOYMENT.md`](DEPLOYMENT.md).
 
 ## Licencia
 

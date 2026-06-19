@@ -13,12 +13,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class RouteSecurityRules {
 
+    private static final String TOKEN_BASE_PATH = "/api/auth/tokens";
+
+    public boolean isInternalOnly(String path) {
+        return path.equals(TOKEN_BASE_PATH + "/validate");
+    }
+
+    public boolean requiresAdmin(HttpMethod method, String path) {
+        return path.startsWith("/api/catalogue") && !HttpMethod.GET.equals(method);
+    }
+
     public boolean isPublic(HttpMethod method, String path) {
-        // Infraestructura y documentación
-        if (path.startsWith("/actuator")
-                || path.startsWith("/api-docs")
-                || path.contains("/swagger-ui")
-                || path.contains("/v3/api-docs")) {
+        // Las solicitudes CORS preflight no contienen credenciales.
+        if (HttpMethod.OPTIONS.equals(method)) {
+            return true;
+        }
+
+        // Solo se exponen las sondas necesarias para la plataforma.
+        if (HttpMethod.GET.equals(method)
+                && (path.equals("/actuator/health") || path.equals("/actuator/info"))) {
             return true;
         }
 
@@ -27,8 +40,11 @@ public class RouteSecurityRules {
             return true;
         }
 
-        // Autenticación: crear, validar, renovar y revocar tokens
-        if (path.startsWith("/api/auth/tokens")) {
+        // La introspección /validate es exclusivamente interna (Gateway -> users).
+        if (HttpMethod.POST.equals(method)
+                && (path.equals(TOKEN_BASE_PATH)
+                || path.equals(TOKEN_BASE_PATH + "/refresh")
+                || path.equals(TOKEN_BASE_PATH + "/revoke"))) {
             return true;
         }
 

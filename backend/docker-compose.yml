@@ -7,8 +7,6 @@ services:
     container_name: rdp-mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
@@ -22,8 +20,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: rdp-redis
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -34,9 +30,11 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rdp-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-relatos}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-relatos_password}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 15s
@@ -57,6 +55,9 @@ services:
     container_name: rdp-gateway
     environment:
       EUREKA_URL: http://eureka:8761/eureka/
+      GATEWAY_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,gateway
+      MANAGEMENT_ENDPOINT_GATEWAY_ENABLED: "true"
     ports:
       - "8080:8080"
     depends_on:
@@ -90,6 +91,8 @@ services:
       DB_USERNAME: relatos_user
       DB_PASSWORD: relatos_password
       RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-relatos}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-relatos_password}
     depends_on:
       mysql:
         condition: service_healthy
@@ -127,9 +130,13 @@ services:
     environment:
       EUREKA_URL: http://eureka:8761/eureka/
       RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-relatos}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-relatos_password}
       GMAIL_USERNAME: ${GMAIL_USERNAME:-}
       GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
     depends_on:
       rabbitmq:
         condition: service_healthy

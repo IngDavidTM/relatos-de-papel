@@ -1,6 +1,6 @@
 // Conexión WebSocket al chat de soporte (microservicio comms vía Gateway).
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
+import { WS_URL } from '../config/environment';
 
 export function connectSupport({ onMessage, onOpen, onClose, onError } = {}) {
   const socket = new WebSocket(`${WS_URL}/ws/support`);

@@ -36,11 +36,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(CreateOrderRequest request) {
+    public OrderResponse create(Long authenticatedUserId, CreateOrderRequest request) {
         Map<Long, CatalogueBookResponse> booksById = orderItemValidationService.validateItems(request.getItems());
 
         Order order = new Order();
-        order.setUserId(request.getUserId());
+        order.setUserId(authenticatedUserId);
         order.setStatus(OrderStatus.COMPLETED);
         order.setTotalAmount(BigDecimal.ZERO);
 
@@ -63,8 +63,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderResponse findById(Long id) {
-        return orderRepository.findById(id)
+    public OrderResponse findByIdForUser(Long id, Long authenticatedUserId) {
+        return orderRepository.findByIdAndUserId(id, authenticatedUserId)
                 .map(this::toResponse)
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }

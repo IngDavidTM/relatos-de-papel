@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: ${PORT:8084}
 
 spring:
   application:
@@ -9,6 +9,15 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          initial-interval: 2s
+          multiplier: 2
+          max-interval: 10s
+          max-attempts: 3
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
@@ -25,8 +34,12 @@ spring:
 # API de IA (Gemini, versión gratuita) para el agente de soporte.
 gemini:
   api-key: ${GEMINI_API_KEY:}
-  model: ${GEMINI_MODEL:gemini-2.0-flash}
+  model: ${GEMINI_MODEL:gemini-2.5-flash}
   base-url: https://generativelanguage.googleapis.com/v1beta
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
 
 eureka:
   client:

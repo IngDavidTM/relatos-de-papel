@@ -1,10 +1,10 @@
 import { apiRequest } from './apiClient';
 
 // Registra una compra. items: [{ bookId, quantity }]. Endpoint protegido.
-export async function createOrder(userId, items) {
+export async function createOrder(items) {
   return apiRequest('POST', '/api/orders', {
     auth: true,
-    body: { userId, items },
+    body: { items },
   });
 }
 
@@ -23,8 +23,8 @@ function mapOrder(order) {
 }
 
 // Recupera los pedidos recientes de un usuario (vista de perfil). Protegido.
-export async function fetchRecentOrders(userId) {
-  const orders = await apiRequest('GET', `/api/orders/users/${userId}/recent`, {
+export async function fetchRecentOrders() {
+  const orders = await apiRequest('GET', '/api/orders/me/recent', {
     auth: true,
   });
   return (orders ?? []).map(mapOrder);

@@ -40,7 +40,7 @@ public class GeminiService {
 
     public GeminiService(CatalogueClient catalogueClient,
                          @Value("${gemini.api-key:}") String apiKey,
-                         @Value("${gemini.model:gemini-2.0-flash}") String model,
+                         @Value("${gemini.model:gemini-2.5-flash}") String model,
                          @Value("${gemini.base-url:https://generativelanguage.googleapis.com/v1beta}") String baseUrl) {
         this.catalogueClient = catalogueClient;
         this.apiKey = apiKey;

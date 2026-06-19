@@ -39,6 +39,9 @@ public class OrderCreatedListener {
                     event.itemCount());
         } catch (Exception ex) {
             log.error("No se pudo notificar el pedido {}: {}", event.orderId(), ex.getMessage());
+            // El contenedor reintentará el mensaje y, tras agotar los intentos,
+            // RabbitMQ lo moverá a la DLQ para inspección o reproceso.
+            throw new IllegalStateException("No se pudo procesar order.created", ex);
         }
     }
 }

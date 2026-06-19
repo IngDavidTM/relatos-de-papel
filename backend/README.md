@@ -41,7 +41,7 @@ docker compose ps
 
 - Dashboard de Eureka: <http://localhost:8761>
 - Rutas del Gateway: <http://localhost:8080/actuator/gateway/routes>
-- Consola de RabbitMQ: <http://localhost:15672> (guest/guest)
+- Consola de RabbitMQ: <http://localhost:15672> (credenciales del archivo `.env`)
 - Las bases de datos se inicializan automáticamente con los scripts de `./sql`
   (120 libros de ejemplo, usuarios demo).
 
@@ -67,3 +67,7 @@ catalogue → orders → users → comms.
 |---|---|---|
 | claudia.rivera@relatosdepapel.com | relatos123 | ROLE_USER |
 | admin@relatosdepapel.com | admin123 | ROLE_ADMIN |
+
+> Estas cuentas son exclusivamente de desarrollo. No cargues `users_dml.sql` en
+> un entorno público. Consulta [`../DEPLOYMENT.md`](../DEPLOYMENT.md) para el
+> despliegue de producción.

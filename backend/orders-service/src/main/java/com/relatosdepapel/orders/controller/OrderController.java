@@ -28,9 +28,10 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> create(
+            @RequestHeader("X-User-Id") @Positive Long authenticatedUserId,
             @Valid @RequestBody CreateOrderRequest request,
             UriComponentsBuilder uriBuilder) {
-        OrderResponse created = orderService.create(request);
+        OrderResponse created = orderService.create(authenticatedUserId, request);
         URI location = uriBuilder
                 .path("/api/orders/{id}")
                 .buildAndExpand(created.getId())
@@ -39,14 +40,16 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> findById(@PathVariable @Positive Long id) {
-        return ResponseEntity.ok(orderService.findById(id));
+    public ResponseEntity<OrderResponse> findById(
+            @RequestHeader("X-User-Id") @Positive Long authenticatedUserId,
+            @PathVariable @Positive Long id) {
+        return ResponseEntity.ok(orderService.findByIdForUser(id, authenticatedUserId));
     }
 
-    @GetMapping("/users/{userId}/recent")
-    public ResponseEntity<List<OrderResponse>> findRecentByUser(
-            @PathVariable @Positive Long userId,
+    @GetMapping("/me/recent")
+    public ResponseEntity<List<OrderResponse>> findRecentForCurrentUser(
+            @RequestHeader("X-User-Id") @Positive Long authenticatedUserId,
             @RequestParam(defaultValue = "10") @Min(1) @Max(50) int limit) {
-        return ResponseEntity.ok(orderService.findRecentByUserId(userId, limit));
+        return ResponseEntity.ok(orderService.findRecentByUserId(authenticatedUserId, limit));
     }
 }

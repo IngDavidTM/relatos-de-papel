@@ -2,6 +2,7 @@ package com.relatosdepapel.users.controller;
 
 import com.relatosdepapel.users.dto.RegisterRequest;
 import com.relatosdepapel.users.dto.UserResponse;
+import com.relatosdepapel.users.exception.ForbiddenOperationException;
 import com.relatosdepapel.users.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +44,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener el perfil de un usuario")
-    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getById(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long authenticatedUserId,
+            @RequestHeader("X-User-Role") String role) {
+        if (!id.equals(authenticatedUserId) && !"ROLE_ADMIN".equals(role)) {
+            throw new ForbiddenOperationException();
+        }
         return ResponseEntity.ok(userService.findById(id));
     }
 }

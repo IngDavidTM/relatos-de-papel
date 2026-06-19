@@ -7,7 +7,7 @@ import { createOrder } from '../services/ordersService';
 function CheckoutPage() {
   const navigate = useNavigate();
   const { items, totalPrice, clearCart } = useCart();
-  const { user, refreshOrders } = useAuth();
+  const { refreshOrders } = useAuth();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,7 +26,7 @@ function CheckoutPage() {
         quantity: item.quantity,
       }));
 
-      await createOrder(user.id, orderItems);
+      await createOrder(orderItems);
       await refreshOrders();
 
       window.alert('Pago realizado con éxito. Recibirás un correo de confirmación.');

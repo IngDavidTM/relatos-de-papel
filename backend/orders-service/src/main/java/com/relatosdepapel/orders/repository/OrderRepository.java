@@ -16,6 +16,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findById(Long id);
 
     @EntityGraph(attributePaths = "items")
+    Optional<Order> findByIdAndUserId(Long id, Long userId);
+
+    @EntityGraph(attributePaths = "items")
     List<Order> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
     List<Order> findByStatus(OrderStatus status);

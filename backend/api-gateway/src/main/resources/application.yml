@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -10,7 +10,9 @@ spring:
       # mediante nombres lógicos (lb://), sin IP ni puerto.
       discovery:
         locator:
-          enabled: true
+          # Se usan exclusivamente las rutas explícitas para no exponer
+          # automáticamente cada servicio registrado en Eureka.
+          enabled: false
           lower-case-service-id: true
       routes:
         - id: catalogue-service
@@ -30,7 +32,7 @@ spring:
           predicates:
             - Path=/api/auth/**
         - id: comms-support-ws
-          uri: lb://comms-service
+          uri: lb:ws://comms-service
           predicates:
             - Path=/ws/**
 
@@ -49,10 +51,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
-  endpoint:
-    gateway:
-      enabled: true
+        include: health,info
 
 logging:
   level:
